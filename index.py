@@ -35,7 +35,7 @@ def translation(obj):
         return obj
 
 def sendWebHook(obj):
-    content = obj['en'] + '\n' + obj['ja'] + '\n' + obj['published'] + '\n' + obj['URL']
+    content = obj['en'] + '\n' + obj['ja'] + '\n' + obj['published'] + '\n' + obj['url']
     try:
         print('shot webhook!')
         response = requests.post(

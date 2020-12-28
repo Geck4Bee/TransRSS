@@ -57,7 +57,7 @@ def handler(event, context):
     data = {
         'output': 'Hello World',
         'timestamp': datetime.datetime.utcnow().isoformat(),
-        'content': translated['content']
+        'content': translated
     }
     return {'statusCode': 200,
             'body': json.dumps(data),

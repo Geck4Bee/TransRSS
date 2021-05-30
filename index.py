@@ -13,7 +13,7 @@ def shaping_data(event):
         'published': event['published'],
         'url': event['url'],
         'webhook': event['webhook'],
-        'notTrans': False if 'notTrans' in event else True,
+        'isTrans': False if 'notTrans' in event else True,
         'isMatrix': True if 'isMatrix' in event else False
     }
 
@@ -70,7 +70,7 @@ def sendMatrix(obj):
 
 def handler(event, context):
     obj = shaping_data(event)
-    if obj['notTrans']:
+    if obj['isTrans']:
         translated = translation(obj)
     if obj['isMatrix']:
         sendMatrix(translated)

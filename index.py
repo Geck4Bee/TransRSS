@@ -8,11 +8,13 @@ import datetime
 
 def shaping_data(event):
     return {
-        'en': event['en'],
-        'ja': event['en'],
+        'en': event['en'] if 'en' in event else '',
+        'ja': event['ja'] if 'ja' in event else event['en'],
         'published': event['published'],
         'url': event['url'],
-        'webhook': event['webhook']
+        'webhook': event['webhook'],
+        'notTrans': False if 'notTrans' in event else True,
+        'isMatrix': True if 'isMatrix' in event else False
     }
 
 def translation(obj):
@@ -49,11 +51,31 @@ def sendWebHook(obj):
         sys.stderr.write(str(ew) + "\n")
     else:
         return response
+        
+def sendMatrix(obj):
+    content = obj['en'] + '\n' + obj['ja'] + '\n' + obj['published'] + '\n' + obj['url']
+    try:
+        print('shot webhook of matrix!')
+        response = requests.post(
+            obj['webhook'],
+            json.dumps({"secret": os.environ['MATRIX_WEBHOOK_KEY'], "message": content}),
+            headers={'Content-Type': 'application/json'}
+        )
+        print(response)
+    except Exception as ew:
+        sys.stderr.write("*** error *** in SendWebHookOfMatrix ***\n")
+        sys.stderr.write(str(ew) + "\n")
+    else:
+        return response
 
 def handler(event, context):
     obj = shaping_data(event)
-    translated = translation(obj)
-    sendWebHook(translated)
+    if obj['notTrans']:
+        translated = translation(obj)
+    if obj['isMatrix']:
+        sendMatrix(translated)
+    else:
+        sendWebHook(translated)
     data = {
         'output': 'Hello World',
         'timestamp': datetime.datetime.utcnow().isoformat(),

@@ -70,6 +70,7 @@ def sendMatrix(obj):
 
 def handler(event, context):
     obj = shaping_data(event)
+    translated = obj
     if obj['isTrans']:
         translated = translation(obj)
     if obj['isMatrix']:
